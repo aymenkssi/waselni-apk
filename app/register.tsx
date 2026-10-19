@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
@@ -12,6 +12,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useCountries } from '../hooks/usePlaces';
 import { apiErrorText } from '../hooks/useQuery';
 import { LEGAL_PAGES } from '../lib/config';
+import { fullPhone, localDigits } from '../lib/phone';
 import { Role } from '../lib/types';
 import { RegisterForm, registerErrors } from '../lib/validation';
 
@@ -37,22 +38,26 @@ export default function Register() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [dial, setDial] = useState('');
+  const [dialLoading, setDialLoading] = useState(false);
+  const lastCountry = useRef('');
   const set = <K extends keyof RegisterForm>(k: K) => (v: RegisterForm[K]) => setForm((f) => ({ ...f, [k]: v }));
 
-  // International dialling code of the chosen country, to prefill the phone number.
-  useEffect(() => {
-    if (!form.country) return;
-    api.get<{ phone_code: string }>(`/country-phone-code/${encodeURIComponent(form.country)}`)
-      .then((r) => {
-        setDial(r.phone_code);
-        setForm((f) => (r.phone_code && !f.phone.trim() ? { ...f, phone: `${r.phone_code} ` } : f));
-      })
-      .catch(() => setDial(''));
-  }, [api, form.country]);
+  // International dialling code of the chosen country: always replaced when the country changes.
+  const chooseCountry = (country: string) => {
+    lastCountry.current = country;
+    setForm((f) => ({ ...f, country }));
+    setDial('');
+    setDialLoading(true);
+    api.get<{ phone_code: string }>(`/country-phone-code/${encodeURIComponent(country)}`)
+      // Ignore a late answer for a country the user has already changed.
+      .then((r) => { if (lastCountry.current === country) setDial(r.phone_code || ''); })
+      .catch(() => undefined)
+      .finally(() => { if (lastCountry.current === country) setDialLoading(false); });
+  };
 
   const submit = async () => {
     setError(null);
-    const e = registerErrors({ ...form, phone: form.phone.replace(dial, '') });
+    const e = registerErrors({ ...form, phone: localDigits(form.phone, dial) });
     setErrors(e);
     if (Object.keys(e).length) { setError(t('err_form')); return; }
     setBusy(true);
@@ -60,7 +65,7 @@ export default function Register() {
       await register({
         email: form.email, password: form.password, role: ROLE[profile][carrierType],
         carrier_type: profile === 'shipper' ? null : carrierType,
-        first_name: form.first_name.trim(), last_name: form.last_name.trim(), phone: form.phone.trim(), country: form.country, city: form.city.trim(),
+        first_name: form.first_name.trim(), last_name: form.last_name.trim(), phone: fullPhone(dial, form.phone), country: form.country, city: form.city.trim(),
       });
       router.replace(profile === 'shipper' ? '/(tabs)/home' : '/verification');
     } catch (err) {
@@ -99,8 +104,17 @@ export default function Register() {
         <View style={{ flex: 1 }}><Field label={t('last_name')} value={form.last_name} onChangeText={set('last_name')} error={errors.last_name} autoComplete="family-name" testID="reg-last-name" /></View>
       </View>
       <PlaceFields countryLabel={t('country')} cityLabel={t('city')} countries={all} country={form.country} city={form.city}
-        onCountry={set('country')} onCity={set('city')} countryError={errors.country} cityError={errors.city} testID="reg" />
-      <Field label={t('phone')} value={form.phone} onChangeText={set('phone')} keyboardType="phone-pad" autoComplete="tel" error={errors.phone} testID="reg-phone" />
+        onCountry={chooseCountry} onCity={set('city')} countryError={errors.country} cityError={errors.city} testID="reg" />
+      <View style={[row, { gap: SPACING.sm, alignItems: 'flex-start' }]}>
+        <View style={{ width: 96 }}>
+          <Field label={t('phone_code')} value={dialLoading ? '…' : dial || '—'} editable={false} testID="reg-phone-code" style={{ textAlign: 'center' }} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Field label={t('phone')} value={form.phone} onChangeText={(v) => set('phone')(v.replace(/[^\d\s]/g, ''))} keyboardType="phone-pad"
+            autoComplete="tel-national" placeholder={form.country ? '6 12 34 56 78' : t('choose_country_first')} editable={!!form.country}
+            error={errors.phone} testID="reg-phone" />
+        </View>
+      </View>
 
       <SectionTitle title={t('register_access')} />
       <Field label={t('email')} value={form.email} onChangeText={set('email')} keyboardType="email-address" autoCapitalize="none" autoComplete="email" error={errors.email} testID="reg-email" />
