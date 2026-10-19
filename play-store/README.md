@@ -132,17 +132,23 @@ sur le web : `https://waselni.fr/account-deletion`). **Partage avec des tiers ?*
 Pour chaque type ci-dessous : **Collectées** : oui ; **Partagées** : non ; **Traitement éphémère** : non ;
 **Obligatoire** sauf mention.
 
-| Catégorie Play | Type de données | Finalités |
-|---|---|---|
-| Informations personnelles | Nom | Fonctionnement de l'application, Gestion du compte |
-| Informations personnelles | Adresse e-mail | Fonctionnement de l'application, Gestion du compte, Communications du développeur |
-| Informations personnelles | Numéro de téléphone | Fonctionnement de l'application, Gestion du compte |
-| Informations personnelles | Adresse | Fonctionnement de l'application, Prévention des fraudes et sécurité (justificatif des transporteurs) |
-| Informations personnelles | Autres informations (date de naissance, numéro de pièce d'identité, SIRET) | Prévention des fraudes et sécurité · **facultatif** (transporteurs seulement) |
-| Photos et vidéos | Photos | Fonctionnement de l'application (photos du colis, photo de profil, pièces jointes), Prévention des fraudes et sécurité (documents d'identité) · **facultatif** |
-| Fichiers et documents | Fichiers et documents | Prévention des fraudes et sécurité (pièce d'identité, justificatif, Kbis en PDF), Fonctionnement de l'application (pièces jointes) · **facultatif** |
-| Messages | Autres messages dans l'application | Fonctionnement de l'application |
-| Activité dans l'application | Autre contenu généré par l'utilisateur (annonces, avis) | Fonctionnement de l'application |
+Libellés exacts de la Play Console en anglais (**App content › Data safety › Data types**) :
+
+| Catégorie (Console) | Type à cocher (Console) | Facultatif ? | Purposes à cocher |
+|---|---|---|---|
+| Personal info | **Name** | Non | App functionality, Account management |
+| Personal info | **Email address** | Non | App functionality, Account management, Developer communications |
+| Personal info | **User IDs** | Non | App functionality, Account management |
+| Personal info | **Address** | Oui (transporteurs) | App functionality, Fraud prevention, security, and compliance |
+| Personal info | **Phone number** | Non | App functionality, Account management |
+| Personal info | **Other info** (date de naissance, n° de pièce d'identité, SIRET) | Oui (transporteurs) | Fraud prevention, security, and compliance |
+| Photos and videos | **Photos** | Oui | App functionality, Fraud prevention, security, and compliance |
+| Files and docs | **Files and docs** | Oui | App functionality, Fraud prevention, security, and compliance |
+| Messages | **Other in-app messages** | Non | App functionality |
+| App activity | **Other user-generated content** (annonces, avis) | Non | App functionality |
+
+Pour chaque type : *Is this data collected, shared, or both?* › **Collected** ; *Is this data processed
+ephemerally?* › **No** ; *Is this data required…?* › selon la colonne « Facultatif ? ».
 
 À ne **pas** déclarer : position (non utilisée), identifiants publicitaires, données d'analyse, informations
 financières (aucune carte saisie dans l'application), contacts, audio.
