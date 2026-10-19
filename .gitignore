@@ -1,0 +1,13 @@
+node_modules/
+.expo/
+dist/
+web-build/
+.metro-cache/
+android/
+ios/
+*.jks
+*.keystore
+service-account-key.json
+expo-env.d.ts
+play-store/build/
+__pycache__/
