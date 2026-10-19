@@ -10,7 +10,7 @@ des transporteurs qui font le même trajet. Elle utilise le même compte et les 
 - Publication d'un trajet ou d'une demande d'envoi (avec photos du colis)
 - Messagerie (texte, photos et documents), propositions de prix, contrats et suivi de l'envoi, avis après livraison
 - Vérification d'identité (pièce d'identité + justificatif de domicile) et vérification pro (SIRET / Kbis) par photo ou PDF
-- Profil, profils publics, signalement, activation de la 2FA, français / anglais / arabe (RTL), mode sombre
+- Profil, profils publics, signalement, activation de la 2FA, suppression du compte, français / anglais / arabe (RTL), mode sombre
 
 Le paiement PayPal reste sur le site (bouton « Payer sur waselni.fr » depuis le contrat).
 

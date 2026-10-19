@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Linking, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
@@ -12,7 +12,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Language, useLanguage } from '../../contexts/LanguageContext';
 import { ThemePreference, useTheme } from '../../contexts/ThemeContext';
 import { useVerification } from '../../hooks/useVerification';
-import { CONTACT_EMAIL, LEGAL_PAGES } from '../../lib/config';
+import { LEGAL_PAGES } from '../../lib/config';
 import { fullName } from '../../lib/format';
 import { isProCarrier, roleKey } from '../../lib/roles';
 
@@ -28,10 +28,6 @@ export default function Profile() {
   const confirmLogout = () => Alert.alert(t('logout'), t('logout_confirm'), [
     { text: t('cancel'), style: 'cancel' },
     { text: t('logout'), style: 'destructive', onPress: logout },
-  ]);
-  const deleteAccount = () => Alert.alert(t('delete_account'), t('delete_account_msg'), [
-    { text: t('cancel'), style: 'cancel' },
-    { text: t('send_request'), onPress: () => Linking.openURL(`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t('delete_account_subject'))}&body=${encodeURIComponent(t('delete_account_body', { a: user?.email ?? '' }))}`) },
   ]);
 
   return (
@@ -117,7 +113,7 @@ export default function Profile() {
       {user && (
         <>
           <Button variant="outline" icon="log-out-outline" label={t('logout')} onPress={confirmLogout} testID="logout" />
-          <Button variant="text" icon="trash-outline" label={t('delete_account')} color={colors.error} onPress={deleteAccount} />
+          <Button variant="text" icon="trash-outline" label={t('delete_account')} color={colors.error} onPress={() => router.push('/delete-account')} testID="profile-delete-account" />
         </>
       )}
       <View style={{ alignItems: 'center', marginTop: SPACING.md }}>
